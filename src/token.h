@@ -5,7 +5,7 @@
 #ifndef JCC_TOKEN_H
 #define JCC_TOKEN_H
 
-#ifdef __cpluscplus
+#ifdef __cplusplus
 extern "C"{
 #endif
 
@@ -115,39 +115,39 @@ extern "C"{
 
 typedef enum {
 #define t(tok, str) JAVA_TOKEN_##tok,
-    JCC_KEYWORD_LIST
-    JCC_OP_LIST
-    JCC_BASE_TOKEN_LIST
+	JCC_KEYWORD_LIST
+	JCC_OP_LIST
+	JCC_BASE_TOKEN_LIST
 #undef t
 } java_token;
 
 typedef struct {
-    int len;
-    java_token token_type;
-    struct {
-        char *as_string;
-        float as_float;
-        int as_int;
-    } value;
+	int len;
+	java_token token_type;
+	struct {
+		char *as_string;
+		float as_float;
+		int as_int;
+	} value;
 } java_token_t;
 
 static char *java_token_strings[] = {
 #define t(tok, str) str,
-        JCC_KEYWORD_LIST
-        JCC_OP_LIST
-        JCC_BASE_TOKEN_LIST
+		JCC_KEYWORD_LIST
+		JCC_OP_LIST
+		JCC_BASE_TOKEN_LIST
 #undef t
 };
 
 static inline const char *
 java_token_type_string(java_token type) {
-    assert(type <= JAVA_TOKEN_CONSTANT_FLOAT);
-    return java_token_strings[type];
+	assert(type <= JAVA_TOKEN_CONSTANT_FLOAT);
+	return java_token_strings[type];
 }
 
 void java_token_inspect(java_token_t *tok);
 
-#ifdef __cpluscplus
+#ifdef __cplusplus
 }
 #endif
 

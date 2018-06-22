@@ -5,6 +5,10 @@
 #ifndef JCC_LEXER_H
 #define JCC_LEXER_H
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 #include <sys/stat.h>
 #include "token.h"
 
@@ -13,18 +17,22 @@
 #endif
 
 typedef struct {
-    char *error;
-    int stash;
-    int lineno;
-    off_t offset;
-    char *source;
-    const char *filename;
-    java_token_t tok;
-    char buf[LEXER_BUFFER_SIZE];
+	char *error;
+	int stash;
+	int lineno;
+	off_t offset;
+	char *source;
+	const char *filename;
+	java_token_t tok;
+	char buf[LEXER_BUFFER_SIZE];
 } java_lexer_t;
 
 int java_scan(java_lexer_t *self);
 
 void java_lexer_init(java_lexer_t *self, char *source, const char *filename);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //JCC_LEXER_H

@@ -107,7 +107,10 @@ error:
 	return 0;
 }
 
-static int scan_ident(java_lexer_t *self, int c) {}
+static int scan_ident(java_lexer_t *self, int c) {
+	int len = 0;
+
+}
 
 static int scan_number(java_lexer_t *self, int c) {}
 
@@ -184,6 +187,22 @@ scan:
 					return token(JAVA_TOKEN_OP_DIV_ASSIGN);
 				default:
 					return undo, token(JAVA_TOKEN_OP_DIV);
+				case '*':
+					while (1) {
+						c = next;
+						if (c == '\n') self->lineno++;
+						if (c == '*') {
+							if ((c = next) == '/') {
+								goto scan;
+							} else {
+								undo;
+							}
+						}
+						if (c == 0) {
+							error("Unclose comment");
+							return token(JAVA_TOKEN_TOKEN_ILLEGAL);
+						}
+					}
 			}
 		case '>':
 			switch (c = next) {
