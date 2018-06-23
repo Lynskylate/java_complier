@@ -31,6 +31,8 @@ int java_scan(java_lexer_t *self);
 
 void java_lexer_init(java_lexer_t *self, char *source, const char *filename);
 
+int java_lexer_tok_reset(java_lexer_t *self);
+
 #ifdef __cplusplus
 }
 #endif

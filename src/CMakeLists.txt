@@ -10,4 +10,4 @@ set(JCC_SOURCE
         lexer.c
         token.c)
 
-add_library(jlib SHARED ${JCC_SOURCE})
+add_library(jlib STATIC ${JCC_SOURCE})

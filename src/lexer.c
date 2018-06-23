@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <memory.h>
 #include "lexer.h"
+#include "token.h"
 
 #ifndef _DEBUG_LEXER
 #define next \
@@ -231,11 +232,19 @@ scan:
 		case 0:
 			token(JAVA_TOKEN_TOKEN_EOF);
 		default:
-			if (isalpha(c) || c == '_') return scan_ident(self, c);
+			if (isalpha(c) || c == '_' || c == '$') return scan_ident(self, c);
 			if (isdigit(c) || c == '.') return scan_number(self, c);
 			token(JAVA_TOKEN_TOKEN_ILLEGAL);
 			error("Illegal Token");
 			return 0;
 	}
 
+}
+
+int java_lexer_tok_reset(java_lexer_t *self) {
+	self->tok.token_type = NULL;
+	self->tok.value.as_string = NULL;
+	self->tok.value.as_real = 0;
+	self->tok.value.as_int = 0;
+	return 0;
 }

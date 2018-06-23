@@ -15,7 +15,7 @@ void java_token_inspect(java_token_t *tok) {
 
         fprintf(stderr, "\033[1;31m %d \033[0m", tok->value.as_int);
     } else if (tok->token_type == JAVA_TOKEN_CONSTANT_FLOAT) {
-        fprintf(stderr, "\033[1;31m %f \033[0m", tok->value.as_float);
+        fprintf(stderr, "\033[1;31m %f \033[0m", tok->value.as_real);
     }
     fprintf(stderr, "\n");
 }

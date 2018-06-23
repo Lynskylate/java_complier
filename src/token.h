@@ -122,16 +122,15 @@ typedef enum {
 } java_token;
 
 typedef struct {
-	int len;
 	java_token token_type;
 	struct {
 		char *as_string;
-		float as_float;
+		double as_real;
 		int as_int;
 	} value;
 } java_token_t;
 
-static char *java_token_strings[] = {
+static const char *java_token_strings[] = {
 #define t(tok, str) str,
 		JCC_KEYWORD_LIST
 		JCC_OP_LIST

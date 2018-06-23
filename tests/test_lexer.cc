@@ -4,14 +4,11 @@
 
 
 
+#include <catch.hpp>
 #include <lexer.h>
 
-#define CATCH_CONFIG_MAIN
 
-#include <catch.hpp>
-
-
-TEST_CASE("Test fro lexer multiline comment", "[factorial]") {
+TEST_CASE("Test for lexer multiline comment", "[comment]") {
 	java_lexer_t lexer;
 	java_lexer_init(&lexer, "/*sdsads\na\nsdsad*/\"asdsad\"", "multi_line_comment");
 	java_scan(&lexer);
@@ -19,3 +16,11 @@ TEST_CASE("Test fro lexer multiline comment", "[factorial]") {
 	REQUIRE(lexer.lineno == 3);
 }
 
+
+TEST_CASE("Test for lexer string", "[string]") {
+	java_lexer_t lexer;
+	java_lexer_init(&lexer, "\"loveforyou\xaa\"", "string");
+	java_scan(&lexer);
+	REQUIRE(strcmp(lexer.tok.value.as_string, "loveforyou\xaa") == 0);
+	REQUIRE(lexer.lineno == 1);
+}
