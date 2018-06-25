@@ -6,62 +6,60 @@
 #define JCC_TOKEN_H
 
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
 
 #include <assert.h>
 
 #define JCC_KEYWORD_LIST \
-    t(ABSTRACT, "abstract") \
-    t(BOOLEAN, "boolean") \
-    t(BREAK, "break") \
-    t(BYTE, "byte") \
-    t(CASE, "case") \
-    t(CATCH, "catch") \
-    t(CHAR, "char") \
-    t(CLASS, "class") \
-    t(CONTINUE, "continue") \
-    t(DEFAULT, "default") \
     t(DO, "do") \
-    t(DOUBLE, "double") \
-    t(ELSE, "else") \
-    t(EXTENDS, "extends") \
-    t(FINAL, "final") \
-    t(FINALLY, "finally") \
-    t(FLOAT, "float") \
-    t(FOR, "for") \
     t(IF, "if") \
-    t(IMPLEMENTS, "implements") \
-    t(IMPORT, "import") \
-    t(INSTANCEOF, "instanceof") \
+    t(FOR, "for") \
     t(INT, "int") \
-    t(INTERFACE, "interface") \
-    t(LONG, "long") \
-    t(NATIVE, "native") \
     t(NEW, "new") \
-    t(PACKAGE, "package") \
-    t(PRIVATE, "private") \
-    t(PROTECTED, "protected") \
-    t(PUBLIC, "public") \
-    t(RETURN, "return") \
-    t(SHORT, "short") \
-    t(STATIC, "static") \
-    t(SUPER, "super") \
-    t(SWITCH, "switch") \
-    t(SYNCHRONIZED, "synchronized") \
-    t(THIS, "this") \
-    t(THROW, "throw") \
-    t(THROWS, "throws") \
-    t(TRANSIENT, "transient") \
     t(TRY, "try") \
     t(VOID, "void") \
-    t(VOLATILE, "volatile") \
-    t(WHILE, "while") \
-    t(STRICTFP, "strictfp") \
+    t(THIS, "this") \
+    t(CHAR, "char") \
+    t(BYTE, "byte") \
+    t(CASE, "case") \
+    t(ELSE, "else") \
+    t(LONG, "long") \
     t(ENUM, "enum") \
     t(GOTO, "goto") \
     t(CONST, "const") \
-    t(ASSERT, "assert")
+    t(SHORT, "short") \
+    t(BREAK, "break") \
+    t(CATCH, "catch") \
+    t(CLASS, "class") \
+    t(FINAL, "final") \
+    t(FLOAT, "float") \
+    t(SUPER, "super") \
+    t(THROW, "throw") \
+    t(WHILE, "while") \
+    t(THROWS, "throws") \
+    t(NATIVE, "native") \
+    t(STATIC, "static") \
+    t(SWITCH, "switch") \
+    t(IMPORT, "import") \
+    t(DOUBLE, "double") \
+    t(PUBLIC, "public") \
+    t(RETURN, "return") \
+    t(BOOLEAN, "boolean") \
+    t(PACKAGE, "package") \
+    t(PRIVATE, "private") \
+    t(DEFAULT, "default") \
+    t(EXTENDS, "extends") \
+    t(FINALLY, "finally") \
+    t(VOLATILE, "volatile") \
+    t(ABSTRACT, "abstract") \
+    t(CONTINUE, "continue") \
+    t(INTERFACE, "interface") \
+    t(PROTECTED, "protected") \
+    t(TRANSIENT, "transient") \
+    t(IMPLEMENTS, "implements") \
+    t(INSTANCEOF, "instanceof") \
+    t(SYNCHRONIZED, "synchronized")
 
 #define JCC_OP_LIST \
   t(LBRACE, "{") \
@@ -106,8 +104,9 @@ extern "C"{
   t(OP_BIT_SHL_ASSIGN, "<<=")
 
 #define JCC_BASE_TOKEN_LIST \
-    t(TOKEN_ILLEGAL, "illegal") \
-    t(TOKEN_EOF, "EOF") \
+    t(ID, "ID")\
+    t(ILLEGAL, "illegal") \
+    t(EOS, "EOS") \
     t(CONSTANT_STRING, "string") \
     t(CONSTANT_INT, "int") \
     t(CONSTANT_CHAR, "char") \
@@ -126,7 +125,7 @@ typedef struct {
 	struct {
 		char *as_string;
 		double as_real;
-		int as_int;
+		long long int as_int;
 	} value;
 } java_token_t;
 

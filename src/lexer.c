@@ -6,8 +6,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <memory.h>
+#include <math.h>
+
 #include "lexer.h"
-#include "token.h"
 
 #ifndef _DEBUG_LEXER
 #define next \
@@ -21,7 +22,9 @@
 
 #define token(t) (self->tok.token_type = t)
 
-#define error(message) (self->error=message, token(JAVA_TOKEN_TOKEN_ILLEGAL))
+#define error(message) (self->error=message, token(JAVA_TOKEN_ILLEGAL))
+
+#define clear_token(tok) (free(buf), token(tok))
 
 void java_lexer_init(java_lexer_t *self, char *source, const char *filename) {
 	self->error = NULL;
@@ -29,6 +32,8 @@ void java_lexer_init(java_lexer_t *self, char *source, const char *filename) {
 	self->filename = filename;
 	self->offset = 0;
 	self->source = source;
+	self->tok.value.as_string = NULL;
+	java_lexer_tok_reset(self);
 }
 
 static int hex(const char c) {
@@ -110,10 +115,189 @@ error:
 
 static int scan_ident(java_lexer_t *self, int c) {
 	int len = 0;
+	int buffer_len = 128;
+	char *buf = (char *) malloc(buffer_len * sizeof(char));
+	token(JAVA_TOKEN_ID);
+	do {
+		if (len >= buffer_len) {
+			buffer_len = buffer_len + 128;
+			buf = (char *) realloc(buf, buffer_len * sizeof(char));
+		}
+		buf[len++] = c;
+	} while (isalpha(c = next) || c == '_' || c == '$');
+	undo;
 
+	buf[len] = 0;
+	switch (len) {
+		case 2: {
+			if (!strcmp(buf, "if")) return clear_token(JAVA_TOKEN_IF);
+			if (!strcmp(buf, "do")) return clear_token(JAVA_TOKEN_DO);
+			break;
+		}
+		case 3: {
+			if (!strcmp(buf, "for")) return clear_token(JAVA_TOKEN_FOR);
+			if (!strcmp(buf, "int")) return clear_token(JAVA_TOKEN_INT);
+			if (!strcmp(buf, "new")) return clear_token(JAVA_TOKEN_NEW);
+			if (!strcmp(buf, "try")) return clear_token(JAVA_TOKEN_TRY);
+			break;
+		}
+		case 4: {
+			if (!strcmp(buf, "void")) return clear_token(JAVA_TOKEN_VOID);
+			if (!strcmp(buf, "this")) return clear_token(JAVA_TOKEN_VOID);
+			if (!strcmp(buf, "char")) return clear_token(JAVA_TOKEN_CHAR);
+			if (!strcmp(buf, "byte")) return clear_token(JAVA_TOKEN_BYTE);
+			if (!strcmp(buf, "case")) return clear_token(JAVA_TOKEN_CASE);
+			if (!strcmp(buf, "else")) return clear_token(JAVA_TOKEN_ELSE);
+			if (!strcmp(buf, "long")) return clear_token(JAVA_TOKEN_LONG);
+			if (!strcmp(buf, "enum")) return clear_token(JAVA_TOKEN_ENUM);
+			if (!strcmp(buf, "goto")) return clear_token(JAVA_TOKEN_GOTO);
+			break;
+		}
+		case 5: {
+			if (!strcmp(buf, "const")) return clear_token(JAVA_TOKEN_CONST);
+			if (!strcmp(buf, "short")) return clear_token(JAVA_TOKEN_SHORT);
+			if (!strcmp(buf, "break")) return clear_token(JAVA_TOKEN_BREAK);
+			if (!strcmp(buf, "catch")) return clear_token(JAVA_TOKEN_CATCH);
+			if (!strcmp(buf, "class")) return clear_token(JAVA_TOKEN_CLASS);
+			if (!strcmp(buf, "final")) return clear_token(JAVA_TOKEN_FINAL);
+			if (!strcmp(buf, "float")) return clear_token(JAVA_TOKEN_FLOAT);
+			if (!strcmp(buf, "super")) return clear_token(JAVA_TOKEN_SUPER);
+			if (!strcmp(buf, "throw")) return clear_token(JAVA_TOKEN_THROW);
+			if (!strcmp(buf, "while")) return clear_token(JAVA_TOKEN_WHILE);
+			break;
+		}
+		case 6: {
+			if (!strcmp(buf, "throws")) return clear_token(JAVA_TOKEN_THROWS);
+			if (!strcmp(buf, "native")) return clear_token(JAVA_TOKEN_NATIVE);
+			if (!strcmp(buf, "static")) return clear_token(JAVA_TOKEN_STATIC);
+			if (!strcmp(buf, "switch")) return clear_token(JAVA_TOKEN_SWITCH);
+			if (!strcmp(buf, "import")) return clear_token(JAVA_TOKEN_IMPORT);
+			if (!strcmp(buf, "double")) return clear_token(JAVA_TOKEN_DOUBLE);
+			if (!strcmp(buf, "public")) return clear_token(JAVA_TOKEN_PUBLIC);
+			if (!strcmp(buf, "return")) return clear_token(JAVA_TOKEN_RETURN);
+			break;
+		}
+		case 7: {
+			if (!strcmp(buf, "boolean")) return clear_token(JAVA_TOKEN_BOOLEAN);
+			if (!strcmp(buf, "package")) return clear_token(JAVA_TOKEN_PACKAGE);
+			if (!strcmp(buf, "private")) return clear_token(JAVA_TOKEN_PRIVATE);
+			if (!strcmp(buf, "default")) return clear_token(JAVA_TOKEN_DEFAULT);
+			if (!strcmp(buf, "extends")) return clear_token(JAVA_TOKEN_EXTENDS);
+			if (!strcmp(buf, "finally")) return clear_token(JAVA_TOKEN_FINALLY);
+			break;
+		}
+		case 8: {
+			if (!strcmp(buf, "volatile")) return clear_token(JAVA_TOKEN_VOLATILE);
+			if (!strcmp(buf, "abstract")) return clear_token(JAVA_TOKEN_ABSTRACT);
+			if (!strcmp(buf, "continue")) return clear_token(JAVA_TOKEN_CONTINUE);
+			break;
+		}
+		case 9: {
+			if (!strcmp(buf, "interface")) return clear_token(JAVA_TOKEN_INTERFACE);
+			if (!strcmp(buf, "protected")) return clear_token(JAVA_TOKEN_PROTECTED);
+			if (!strcmp(buf, "transient")) return clear_token(JAVA_TOKEN_TRANSIENT);
+			break;
+		}
+		case 10: {
+			if (!strcmp(buf, "implements")) return clear_token(JAVA_TOKEN_IMPLEMENTS);
+			if (!strcmp(buf, "instanceof")) return clear_token(JAVA_TOKEN_INSTANCEOF);
+			break;
+		}
+		case 11: {
+			if (!strcmp(buf, "synchronized")) return clear_token(JAVA_TOKEN_SYNCHRONIZED);
+			break;
+		}
+	}
+	self->tok.value.as_string = strdup(buf);
+	free(buf);
+	return 1;
 }
 
-static int scan_number(java_lexer_t *self, int c) {}
+static int scan_number(java_lexer_t *self, int c) {
+	int n = 0, type = 0, expo = 0, e;
+	int expo_type = 1;
+
+	token(JAVA_TOKEN_CONSTANT_INT);
+
+	switch (c) {
+		case '0':
+			goto scan_hex;
+		default:
+			goto scan_int;
+	}
+
+scan_hex:
+	switch (c = next) {
+		case 'x':
+			if (!isxdigit(c = next)) {
+				error("hex literal expects one or more digits");
+				return 0;
+			} else {
+				do n = n << 4 | hex(c);
+				while (isxdigit(c = next));
+			}
+			self->tok.value.as_int = n;
+			undo;
+			return 1;
+		default:
+			undo;
+			c = '0';
+			goto scan_int;
+	}
+
+	// [0-9_]+
+
+scan_int:
+	do {
+		if ('_' == c) continue;
+		else if ('.' == c) goto scan_float;
+		else if ('e' == c || 'E' == c) goto scan_expo;
+		n = n * 10 + c - '0';
+	} while (isdigit(c = next) || '_' == c || '.' == c || 'e' == c || 'E' == c);
+	undo;
+	self->tok.value.as_int = n;
+	return 1;
+
+	// [0-9_]+
+
+scan_float:
+	{
+		e = 1;
+		type = 1;
+		token(JAVA_TOKEN_CONSTANT_FLOAT);
+		while (isdigit(c = next) || '_' == c || 'e' == c || 'E' == c) {
+			if ('_' == c) continue;
+			else if ('e' == c || 'E' == c) goto scan_expo;
+			n = n * 10 + c - '0';
+			e *= 10;
+		}
+		undo;
+		self->tok.value.as_real = (float) n / e;
+		return 1;
+	}
+
+	// [\+\-]?[0-9]+
+
+scan_expo:
+	{
+		while (isdigit(c = next) || '+' == c || '-' == c) {
+			if ('-' == c) {
+				expo_type = 0;
+				continue;
+			}
+			expo = expo * 10 + c - '0';
+		}
+
+		undo;
+		if (expo_type == 0) expo *= -1;
+		if (type == 0)
+			self->tok.value.as_int = n * pow(10, expo);
+		else
+			self->tok.value.as_real = ((double) n / e) * pow(10, expo);
+	}
+
+	return 1;
+}
 
 
 int java_scan(java_lexer_t *self) {
@@ -201,7 +385,7 @@ scan:
 						}
 						if (c == 0) {
 							error("Unclose comment");
-							return token(JAVA_TOKEN_TOKEN_ILLEGAL);
+							return token(JAVA_TOKEN_ILLEGAL);
 						}
 					}
 			}
@@ -221,8 +405,10 @@ scan:
 				case '<':
 					return '=' == next ? token(JAVA_TOKEN_OP_BIT_SHR_ASSIGN) : (undo, token(JAVA_TOKEN_OP_BIT_SHR));
 				default:
-					return token(JAVA_TOKEN_OP_LT);
+					return (undo, token(JAVA_TOKEN_OP_LT));
 			}
+		case '=':
+			return '=' == next ? token(JAVA_TOKEN_OP_EQ) : (undo, token(JAVA_TOKEN_OP_ASSIGN));
 		case '|':
 			return '|' == next ? token(JAVA_TOKEN_OP_OR) : token(JAVA_TOKEN_OP_BIT_OR);
 		case '&':
@@ -230,11 +416,11 @@ scan:
 		case '"':
 			return scan_string(self, c);
 		case 0:
-			token(JAVA_TOKEN_TOKEN_EOF);
+			return token(JAVA_TOKEN_EOS);
 		default:
 			if (isalpha(c) || c == '_' || c == '$') return scan_ident(self, c);
 			if (isdigit(c) || c == '.') return scan_number(self, c);
-			token(JAVA_TOKEN_TOKEN_ILLEGAL);
+			token(JAVA_TOKEN_ILLEGAL);
 			error("Illegal Token");
 			return 0;
 	}
@@ -243,6 +429,9 @@ scan:
 
 int java_lexer_tok_reset(java_lexer_t *self) {
 	self->tok.token_type = NULL;
+	if (self->tok.value.as_string != NULL) {
+		free(self->tok.value.as_string);
+	}
 	self->tok.value.as_string = NULL;
 	self->tok.value.as_real = 0;
 	self->tok.value.as_int = 0;
