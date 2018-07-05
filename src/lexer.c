@@ -305,6 +305,8 @@ int java_scan(java_lexer_t *self) {
 
 scan:
 	switch (c = next) {
+		case '\n':
+			self->lineno += 1;
 		case '\t':
 		case ' ':
 			goto scan;
@@ -388,6 +390,12 @@ scan:
 							return token(JAVA_TOKEN_ILLEGAL);
 						}
 					}
+			}
+		case '!':
+			if (next == '='){
+				return token(JAVA_TOKEN_OP_NEQ);
+			}else{
+				return token(JAVA_TOKEN_OP_NOT);
 			}
 		case '>':
 			switch (c = next) {

@@ -8,6 +8,9 @@ include_directories(${JLIB_INCLUDE_DIRECTORY})
 
 set(JCC_SOURCE
         lexer.c
-        token.c)
+        token.c
+        utils.c)
 
 add_library(jlib STATIC ${JCC_SOURCE})
+add_executable(lex ${PROJECT_SOURCE_DIR}/bin/lex.c)
+target_link_libraries(lex jlib)
