@@ -4,10 +4,7 @@
 
 #include "utils.h"
 #include "lexer.h"
-#include <stdio.h>
 #include <stdlib.h>
-#include <lexer.h>
-#include <token.h>
 
 int main(int argc, char *argv[]) {
 	if (argc != 2) {

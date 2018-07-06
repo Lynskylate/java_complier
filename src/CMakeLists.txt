@@ -9,6 +9,9 @@ include_directories(${JLIB_INCLUDE_DIRECTORY})
 set(JCC_SOURCE
         lexer.c
         token.c
+        ast.c
+        parser.c
+        ast_utils.c
         utils.c)
 
 add_library(jlib STATIC ${JCC_SOURCE})
