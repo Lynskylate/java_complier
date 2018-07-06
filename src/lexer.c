@@ -436,7 +436,7 @@ scan:
 }
 
 int java_lexer_tok_reset(java_lexer_t *self) {
-	self->tok.token_type = NULL;
+//	self->tok.token_type = NULL;
 	if (self->tok.value.as_string != NULL) {
 		free(self->tok.value.as_string);
 	}

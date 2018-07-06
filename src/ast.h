@@ -55,8 +55,9 @@ typedef struct {
 } java_node_string;
 
 typedef struct {
+    java_node_t base;
 
-} ;
+};
 
 
 #endif //JCC_AST_H

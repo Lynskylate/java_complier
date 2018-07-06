@@ -11,6 +11,6 @@ bool is_prefix_operation(java_token_t *tok);
 
 bool is_postfix_operation(java_token_t *tok);
 
-bool is_infix_operation(java_token_t *tok):
+bool is_infix_operation(java_token_t *tok);
 
 #endif //JCC_AST_UTILS_H

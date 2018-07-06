@@ -5,7 +5,7 @@
 #ifndef JCC_PARSER_H
 #define JCC_PARSER_H
 
-#include "ast.h
+#include "ast.h"
 #include "token.h"
 #include "lexer.h"
 
