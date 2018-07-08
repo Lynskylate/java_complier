@@ -1,63 +1,90 @@
 //
-// Created by lynskylate on 2018/7/6.
+// Created by Lynn on 2018/7/7.
 //
 
 #ifndef JCC_AST_H
 #define JCC_AST_H
+#ifdef __cplusplus
+extern "C"{
+#endif
 
-#include <stdio.h>
-#include <stdbool.h>
 #include "token.h"
+#include "lexer.h"
+#include <stdbool.h>
+
 
 #define JAVA_NODE_LIST \
-    n(IF) \
-    n(WHILE) \
-    n(ID) \
+    n(BLOCK) \
+    n(EXPR_STMT) \
+    n(RETURN) \
+    n(UNARY_OP) \
+    n(BINARY_OP) \
+    n(TERNARY_OP) \
+    n(BOOL) \
     n(INT) \
     n(FLOAT) \
     n(STRING) \
-    n(UNARY_OP) \
-    n(BINARY_OP) \
-    n(TRIPLE_OP) \
-    n(PREFIX_OP) \
-    n(POSTFIX_OP) \
-    n(ASSIGNMENT_OP) \
-    n(EXPRESSION) \
+    n(ID)
 
 typedef enum {
-#define n(NODE) JAVA_NODE_##NODE,
-	JAVA_NODE_LIST
+#define n(node) JAVA_NODE_##node,
+    JAVA_NODE_LIST
 #undef n
 } java_node_type;
 
 typedef struct {
-	java_node_type type;
-	int lineno;
+    java_node_type type;
+    int lineno;
 } java_node_t;
 
 typedef struct {
-	java_node_t base;
-	double value;
-} java_node_double;
-
-typedef java_node_double java_node_float;
-
-typedef struct {
-	java_node_t base;
-	long long int value;
-} java_node_int;
-typedef java_node_int java_node_long;
-
-typedef struct {
-	java_node_t base;
-	int string_length;
-	char *str;
-} java_node_string;
+    java_node_t base;
+    java_token op_type;
+    java_node_t *left;
+    java_node_t *right;
+} java_binary_op_node_t;
 
 typedef struct {
     java_node_t base;
+    java_token op_type;
+    java_node_t *expr;
+} java_unary_op_node_t;
 
-};
+typedef struct {
+    java_node_t base;
+    const char *name;
+} java_id_node_t;
 
+typedef struct {
+    java_node_t base;
+    union {
+        long long int as_int;
+        double as_real;
+        bool as_bool;
+    } value;
+} java_constant_number_node_t;
 
+typedef struct {
+    java_node_t base;
+    int str_length;
+    char *str;
+} java_constant_string_node_t;
+
+java_constant_number_node_t *java_float_node_new(double, int);
+
+java_constant_number_node_t *java_int_node_new(long long int, int);
+
+java_constant_number_node_t *java_bool_node_new(bool, int);
+
+java_constant_string_node_t *java_string_node_new(char *str, int);
+
+java_unary_op_node_t *java_unary_op_node_new(java_token, java_node_t *, int);
+
+java_id_node_t *java_id_node_new(const char *, int);
+
+java_binary_op_node_t *java_binary_op_node_new(java_token, java_node_t *, java_node_t *, int);
+
+#ifdef __cplusplus
+}
+#endif
 #endif //JCC_AST_H

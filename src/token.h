@@ -62,16 +62,6 @@ extern "C" {
     t(SYNCHRONIZED, "synchronized")
 
 #define JCC_OP_LIST \
-  t(LBRACE, "{") \
-  t(RBRACE, "}") \
-  t(LPAREN, "(") \
-  t(RPAREN, ")") \
-  t(LBRACK, "[") \
-  t(RBRACK, "]") \
-  t(COLON, ":") \
-  t(QMARK, "?") \
-  t(SEMICOLON, ";") \
-  t(COMMA, ",") \
   t(OP_DOT, ".") \
   t(OP_NOT, "!") \
   t(OP_PLUS, "+") \
@@ -104,9 +94,21 @@ extern "C" {
   t(OP_BIT_SHL_ASSIGN, "<<=")
 
 #define JCC_BASE_TOKEN_LIST \
+    t(LBRACE, "{") \
+    t(RBRACE, "}") \
+    t(LPAREN, "(") \
+    t(RPAREN, ")") \
+    t(LBRACK, "[") \
+    t(RBRACK, "]") \
+    t(COLON, ":") \
+    t(QMARK, "?") \
+    t(SEMICOLON, ";") \
+    t(COMMA, ",") \
     t(ID, "ID")\
     t(ILLEGAL, "illegal") \
     t(EOS, "EOS") \
+    t(CONSTANT_TRUE, "true") \
+    t(CONSTANT_FALSE, "false") \
     t(CONSTANT_STRING, "string") \
     t(CONSTANT_INT, "int") \
     t(CONSTANT_CHAR, "char") \
@@ -114,33 +116,33 @@ extern "C" {
 
 typedef enum {
 #define t(tok, str) JAVA_TOKEN_##tok,
-	JCC_KEYWORD_LIST
-	JCC_OP_LIST
-	JCC_BASE_TOKEN_LIST
+    JCC_KEYWORD_LIST
+    JCC_OP_LIST
+    JCC_BASE_TOKEN_LIST
 #undef t
 } java_token;
 
 typedef struct {
-	java_token token_type;
-	struct {
-		char *as_string;
-		double as_real;
-		long long int as_int;
-	} value;
+    java_token token_type;
+    struct {
+        char *as_string;
+        double as_real;
+        long long int as_int;
+    } value;
 } java_token_t;
 
 static const char *java_token_strings[] = {
 #define t(tok, str) str,
-		JCC_KEYWORD_LIST
-		JCC_OP_LIST
-		JCC_BASE_TOKEN_LIST
+        JCC_KEYWORD_LIST
+        JCC_OP_LIST
+        JCC_BASE_TOKEN_LIST
 #undef t
 };
 
 static inline const char *
 java_token_type_string(java_token type) {
-	assert(type <= JAVA_TOKEN_CONSTANT_FLOAT);
-	return java_token_strings[type];
+    assert(type <= JAVA_TOKEN_CONSTANT_FLOAT);
+    return java_token_strings[type];
 }
 
 void java_token_inspect(java_token_t *tok);

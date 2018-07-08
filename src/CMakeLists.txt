@@ -11,7 +11,6 @@ set(JCC_SOURCE
         token.c
         ast.c
         parser.c
-        ast_utils.c
         utils.c)
 
 add_library(jlib STATIC ${JCC_SOURCE})

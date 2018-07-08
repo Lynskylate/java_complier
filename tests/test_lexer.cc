@@ -7,6 +7,7 @@
 #include <catch.hpp>
 #include <lexer.h>
 #include <token.h>
+#include <string.h>
 
 
 TEST_CASE("Test for lexer multiline comment", "[comment]") {

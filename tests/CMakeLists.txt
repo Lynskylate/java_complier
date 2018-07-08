@@ -7,5 +7,6 @@ include_directories(${JLIB_INCLUDE_DIRECTORY} ../src ${PROJECT_SOURCE_DIR}/inclu
 
 add_executable(test_lexer
         ${PROJECT_SOURCE_DIR}/test_main.cc
+        ${PROJECT_SOURCE_DIR}/test_parse.cc
         ${PROJECT_SOURCE_DIR}/test_lexer.cc)
 target_link_libraries(test_lexer jlib)

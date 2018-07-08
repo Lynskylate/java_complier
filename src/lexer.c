@@ -151,6 +151,8 @@ static int scan_ident(java_lexer_t *self, int c) {
 			if (!strcmp(buf, "long")) return clear_token(JAVA_TOKEN_LONG);
 			if (!strcmp(buf, "enum")) return clear_token(JAVA_TOKEN_ENUM);
 			if (!strcmp(buf, "goto")) return clear_token(JAVA_TOKEN_GOTO);
+			if(!strcmp(buf, "true")) return clear_token(JAVA_TOKEN_CONSTANT_TRUE);
+			if(!strcmp(buf, "false")) return clear_token(JAVA_TOKEN_CONSTANT_FALSE);
 			break;
 		}
 		case 5: {
