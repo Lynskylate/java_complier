@@ -10,7 +10,8 @@
 
 #define is_op(t) assert((op>=JAVA_TOKEN_OP_DOT) &&(op<=JAVA_TOKEN_OP_BIT_SHL_ASSIGN))
 
-java_constant_number_node_t *java_int_node_new(long long int value, int lineno) {
+java_constant_number_node_t *
+java_int_node_new(long long int value, int lineno) {
     java_constant_number_node_t *self = (java_constant_number_node_t *) malloc(sizeof(java_constant_number_node_t));
     if (unlikely(!self)) return NULL;
     self->base.type = JAVA_NODE_INT;
@@ -19,7 +20,8 @@ java_constant_number_node_t *java_int_node_new(long long int value, int lineno) 
     return self;
 }
 
-java_constant_number_node_t *java_bool_node_new(bool value, int lineno) {
+java_constant_number_node_t *
+java_bool_node_new(bool value, int lineno) {
     java_constant_number_node_t *self = (java_constant_number_node_t *) malloc(sizeof(java_constant_number_node_t));
     if (unlikely(!self)) return NULL;
     self->base.type = JAVA_NODE_BOOL;
@@ -28,7 +30,8 @@ java_constant_number_node_t *java_bool_node_new(bool value, int lineno) {
     return self;
 }
 
-java_constant_number_node_t *java_float_node_new(double value, int lineno) {
+java_constant_number_node_t *
+java_float_node_new(double value, int lineno) {
     java_constant_number_node_t *self = (java_constant_number_node_t *) malloc(sizeof(java_constant_number_node_t));
     if (unlikely(!self)) return NULL;
     self->base.type = JAVA_NODE_FLOAT;
@@ -37,7 +40,8 @@ java_constant_number_node_t *java_float_node_new(double value, int lineno) {
     return self;
 }
 
-java_constant_string_node_t *java_string_node_new(char *str, int lineno) {
+java_constant_string_node_t *
+java_string_node_new(char *str, int lineno) {
     java_constant_string_node_t *self = (java_constant_string_node_t *) malloc(sizeof(java_constant_string_node_t));
     if (unlikely(!self)) return NULL;
     self->base.type = JAVA_NODE_STRING;
@@ -47,7 +51,8 @@ java_constant_string_node_t *java_string_node_new(char *str, int lineno) {
     return self;
 }
 
-java_unary_op_node_t *java_unary_op_node_new(java_token op, java_node_t *expr, int lineno) {
+java_unary_op_node_t *
+java_unary_op_node_new(java_token op, java_node_t *expr, int lineno) {
     is_op(op);
     java_unary_op_node_t *self = (java_unary_op_node_t *) malloc(sizeof(java_unary_op_node_t));
     if (unlikely(!self)) return NULL;
@@ -58,7 +63,8 @@ java_unary_op_node_t *java_unary_op_node_new(java_token op, java_node_t *expr, i
     return self;
 }
 
-java_id_node_t *java_id_node_new(const char *name, int lineno){
+java_id_node_t *
+java_id_node_new(const char *name, int lineno){
     java_id_node_t *self = (java_id_node_t *)malloc(sizeof(java_id_node_t));
     if (unlikely(!self)) return NULL;
     self->base.type = JAVA_NODE_ID;
@@ -67,7 +73,8 @@ java_id_node_t *java_id_node_new(const char *name, int lineno){
     return self;
 }
 
-java_binary_op_node_t *java_binary_op_node_new(java_token op, java_node_t *left, java_node_t *right, int lineno){
+java_binary_op_node_t *
+java_binary_op_node_new(java_token op, java_node_t *left, java_node_t *right, int lineno){
     java_binary_op_node_t *self = (java_binary_op_node_t *)malloc(sizeof(java_binary_op_node_t));
     if (unlikely(!self)) return NULL;
     self->base.type = JAVA_NODE_BINARY_OP;

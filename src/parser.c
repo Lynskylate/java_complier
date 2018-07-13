@@ -231,7 +231,8 @@ bitwise_and_expr(java_parser_t *self) {
     return node;
 }
 
-static java_node_t *bitwise_xor_expr(java_parser_t *self) {
+static java_node_t*
+bitwise_xor_expr(java_parser_t *self) {
     java_node_t *node, *right;
     debug('bitwise_xor_expr');
     int line = lineno;
@@ -247,7 +248,8 @@ static java_node_t *bitwise_xor_expr(java_parser_t *self) {
     return node;
 }
 
-static java_node_t *bitwise_or_expr(java_parser_t *self) {
+static java_node_t *
+bitwise_or_expr(java_parser_t *self) {
     java_node_t *node, *right;
     debug('bitwise_or_expr');
     int line = lineno;
@@ -263,7 +265,8 @@ static java_node_t *bitwise_or_expr(java_parser_t *self) {
     return node;
 }
 
-static java_node_t *logical_and_expr(java_parser_t *self) {
+static java_node_t *
+logical_and_expr(java_parser_t *self) {
     java_node_t *node, *right;
     debug("logical and expr");
     int line = lineno;
@@ -280,7 +283,8 @@ static java_node_t *logical_and_expr(java_parser_t *self) {
     return node;
 }
 
-static java_node_t *logical_or_expr(java_parser_t *self) {
+static java_node_t *
+logical_or_expr(java_parser_t *self) {
     java_node_t *node, *right;
     int line = lineno;
     debug("logical_or_expr");
@@ -301,7 +305,8 @@ static java_node_t *logical_or_expr(java_parser_t *self) {
 /*
  *
  */
-static java_node_t *assignment_expr(java_parser_t *self) {
+static java_node_t *
+assignment_expr(java_parser_t *self) {
     java_token op;
     java_node_t *node, *right;
     int line = lineno;
@@ -320,7 +325,8 @@ static java_node_t *assignment_expr(java_parser_t *self) {
 }
 
 
-static java_node_t *expr(java_parser_t *self) {
+static java_node_t *
+expr(java_parser_t *self) {
     java_node_t *node;
     debug("expr");
     if (!(node = assignment_expr(self))) return NULL;
